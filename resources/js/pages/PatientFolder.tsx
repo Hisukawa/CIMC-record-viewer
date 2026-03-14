@@ -52,10 +52,11 @@ export default function PatientFolder({ patient }: { patient: Patient }) {
             <main className="mx-auto max-w-5xl p-8">
                 <Link
                     href={`/viewer/record-finder`}
-                    className="mb-6 inline-flex items-center gap-2 font-montserrat text-sm font-normal text-slate-500 transition-colors hover:text-blue-600"
+                    className="mb-6 rounded-md inline-flex items-center gap-2 font-montserrat text-sm font-semibold text-slate-500 transition-colors hover:text-blue-700"
                 >
-                    ← Back to Search
+                    <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>Back to Search
                 </Link>
+                
                 
                 {/* Patient Header */}
                 <div className="mb-8 flex items-end justify-between border-b border-slate-200 pb-6">
@@ -107,7 +108,7 @@ export default function PatientFolder({ patient }: { patient: Patient }) {
                 {latestFile && (
                     <section className="mb-12">
                         <h3 className="mb-4 font-montserrat text-[10px] font-semibold tracking-[0.2em] text-blue-600 uppercase">
-                            Most Recent Activity
+                            Most Recently Updated
                         </h3>
                         <div className="group relative flex items-center gap-6 rounded-2xl border border-blue-400 bg-white p-6 shadow-sm transition-all">
                             <div className="flex h-20 w-20 flex-shrink-0 items-center justify-center">
@@ -268,7 +269,7 @@ export default function PatientFolder({ patient }: { patient: Patient }) {
                             ))
                         ) : (
                             <div className="col-span-full rounded-2xl border-2 border-dashed border-slate-200 py-10 text-center text-slate-400">
-                                No archive records found.
+                                Archive List
                             </div>
                         )}
                     </div>

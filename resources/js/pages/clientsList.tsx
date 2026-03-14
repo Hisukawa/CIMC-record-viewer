@@ -2,20 +2,7 @@ import React, { useState } from 'react';
 import { Head, router, Link } from '@inertiajs/react';
 import Header from '@/components/header';
 
-interface Patient {
-    id: number;
-    hrn: string;
-    firstname: string;
-    middlename: string | null;
-    lastname: string;
-    records_count: number;
-}
-
-interface Props {
-    patients: Patient[];
-    filters: any;
-}
-
+import { Patient, Props } from '@/types/patient';
 
 const SkeletonRow = () => (
     <tr className="animate-pulse">
@@ -79,7 +66,7 @@ export default function RecordFinder({ patients = [], filters }: Props) {
 
     const handleSearch = () => {
         if (isSearchDisabled) return;
-
+        
         setIsLoading(true);
         const finalHrn = searchData.hrn
             ? searchData.hrn.padStart(MAX_LENGTH, '0')

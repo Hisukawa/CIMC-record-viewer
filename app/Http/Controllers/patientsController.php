@@ -11,7 +11,9 @@ class patientsController extends Controller
 {
     public function index(Request $request)
     {
-        $query = patients::with('records');
+        $query = patients::withCount(['records', 'records as records_count' => function ($query) {
+            $query->withCount('file');
+        }]);
 
         $query->when($request->first, fn($q, $v) => $q->where('firstname', 'like', "%$v%"))
             ->when($request->last, fn($q, $v) => $q->where('lastname', 'like', "%$v%"))
@@ -31,11 +33,11 @@ class patientsController extends Controller
         $patient = patients::with(['records.file'])
             ->where('hrn', $hrn)
             ->firstOrFail();
-        
+
         $patient->records->transform(function ($record) {
             // Get the first file from the collection
             $firstFile = $record->file->first();
-            
+
             return [
                 'id' => $record->id,
                 'file_name' => $record->record_type ?? 'Unnamed File',
