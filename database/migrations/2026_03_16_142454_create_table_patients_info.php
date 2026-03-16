@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('patient_id');
             $table->enum('sex', ['Male', 'Female']);
-            $table->unsignedBigInteger('address_id');
             $table->string('civil_status', 20);
             $table->string('nationality', 50);
             $table->date('birthdate');

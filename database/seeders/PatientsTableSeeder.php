@@ -27,7 +27,7 @@ class PatientsTableSeeder extends Seeder
             // Generate 8 random digits after 7 zeros to make 15-digit HRN
             $randomDigits = str_pad($faker->unique()->numberBetween(0, 99999999), 8, '0', STR_PAD_LEFT);
             $hrn = '0000000' . $randomDigits; // 7 zeros + 8 digits = 15 digits
-
+            
             DB::table('patients')->insert([
                 'hrn' => $hrn,
                 'firstname' => $faker->firstName,

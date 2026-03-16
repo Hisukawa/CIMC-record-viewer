@@ -31,8 +31,21 @@ const SkeletonRow = () => (
     </tr>
 );
 
+type PaginationLinks = {
+    url: string | null;
+    label: string;
+    active: boolean;
+};
+
 type Props = {
-    patients: Patient[];
+    patients: {
+        data: Patient[];
+        links: PaginationLinks[];
+        total: number;
+        current_page: number;
+        last_page: number;
+    };
+    
     filters?: {
         first?: string;
         last?: string;
@@ -49,7 +62,7 @@ type Props = {
     };
 };
 
-export default function RecordFinder({ patients = [], filters, auth }: Props) {
+export default function RecordFinder({ patients, filters, auth }: Props) {
     const [isLoading, setIsLoading] = useState(false);
     const [copied, setCopied] = useState(false);
     const [showNotification, setShowNotification] = useState(false);
@@ -58,6 +71,7 @@ export default function RecordFinder({ patients = [], filters, auth }: Props) {
 
     const MAX_LENGTH = 15;
     const ZERO_STRING = '000000000';
+    const patientData = patients.data || [];
 
     const [searchData, setSearchData] = useState({
         first: filters?.first || '',
@@ -116,8 +130,8 @@ export default function RecordFinder({ patients = [], filters, auth }: Props) {
             preserveState: true,
             replace: true,
             onSuccess: (page) => {
-                const newPatients = page.props.patients as Patient[];
-                setResultCount(newPatients.length);
+                const results = page.props.patients as any;
+                setResultCount(results.total || 0);
                 setShowNotification(true);
                 setTimeout(() => setShowNotification(false), 4000);
             },
@@ -342,7 +356,7 @@ export default function RecordFinder({ patients = [], filters, auth }: Props) {
                                                 ),
                                             })
                                         }
-                                        className="w-full rounded-md border border-slate-300 bg-slate-50 px-3 py-2.5 font-montserrat text-sm font-normal uppercase outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-50 disabled:cursor-not-allowed"
+                                        className="w-full rounded-md border border-slate-400 bg-slate-50 px-3 py-2.5 font-montserrat text-sm font-normal uppercase outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-50 disabled:cursor-not-allowed"
                                     />
                                 </div>
                             ))}
@@ -409,8 +423,8 @@ export default function RecordFinder({ patients = [], filters, auth }: Props) {
                                     <SkeletonRow />
                                     <SkeletonRow />
                                 </>
-                            ) : patients.length > 0 ? (
-                                patients.map((p) => (
+                            ) : patientData.length > 0 ? (
+                                patientData.map((p) => (
                                     <tr
                                         key={p.id}
                                         className="transition-colors hover:bg-blue-50/30"
@@ -449,6 +463,33 @@ export default function RecordFinder({ patients = [], filters, auth }: Props) {
                             )}
                         </tbody>
                     </table>
+                    {/* TABLE FOOTER / PAGINATION */}
+                    <div className="flex items-center justify-between border-t border-slate-200 bg-slate-50/50 px-8 py-4">
+                        <div className="font-montserrat text-xs font-medium text-slate-500 uppercase">
+                            Showing {patients.data.length} of {patients.total}{' '}
+                            Records
+                        </div>
+
+                        <div className="flex gap-1">
+                            {patients.links.map((link, index) => (
+                                <Link
+                                    key={index}
+                                    href={link.url || '#'}
+                                    dangerouslySetInnerHTML={{
+                                        __html: link.label,
+                                    }}
+                                    className={`flex h-8 min-w-[32px] items-center justify-center rounded px-2 text-[10px] font-bold transition-all ${
+                                        link.active
+                                            ? 'bg-blue-600 text-white shadow-md'
+                                            : link.url
+                                              ? 'border border-slate-300 bg-white text-slate-600 hover:bg-blue-50'
+                                              : 'cursor-not-allowed bg-transparent text-slate-300'
+                                    }`}
+                                    preserveScroll // Keeps the user's scroll position
+                                />
+                            ))}
+                        </div>
+                    </div>
                 </section>
             </main>
         </div>
