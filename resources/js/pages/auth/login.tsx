@@ -24,7 +24,7 @@ export default function Login({
     canRegister,
 }: Props) {
     const [showPassword, setShowPassword] = useState(false);
-
+    
     // Use useForm for form state
     const form = useForm({
         email: '',
@@ -66,21 +66,10 @@ export default function Login({
                         <InputError message={form.errors.email} />
                     </div>
 
-                    {/* Password with Eye Toggle */}
+                    {/* Password */}
                     <div className="grid gap-2">
-                        <div className="flex items-center justify-between">
-                            <Label htmlFor="password">Password</Label>
-                            {canResetPassword && (
-                                <TextLink
-                                    href={request()}
-                                    className="text-sm"
-                                    tabIndex={5}
-                                >
-                                    Forgot password?
-                                </TextLink>
-                            )}
-                        </div>
-
+                        {/* Removed Forgot Password from here */}
+                        <Label htmlFor="password">Password</Label>
                         <div className="relative">
                             <Input
                                 id="password"
@@ -112,18 +101,35 @@ export default function Login({
                         <InputError message={form.errors.password} />
                     </div>
 
-                    {/* Remember Me */}
-                    <div className="flex items-center space-x-3">
-                        <Checkbox
-                            id="remember"
-                            name="remember"
-                            tabIndex={3}
-                            checked={form.data.remember}
-                            onCheckedChange={(checked) =>
-                                form.setData('remember', !!checked)
-                            }
-                        />
-                        <Label htmlFor="remember">Remember me</Label>
+                    {/* Remember Me & Forgot Password Row */}
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center space-x-3">
+                            <Checkbox
+                                id="remember"
+                                name="remember"
+                                tabIndex={3}
+                                checked={form.data.remember}
+                                onCheckedChange={(checked) =>
+                                    form.setData('remember', !!checked)
+                                }
+                            />
+                            <Label
+                                htmlFor="remember"
+                                className="cursor-pointer"
+                            >
+                                Remember me
+                            </Label>
+                        </div>
+
+                        {canResetPassword && (
+                            <TextLink
+                                href={request()}
+                                className="text-sm"
+                                tabIndex={5}
+                            >
+                                Forgot password?
+                            </TextLink>
+                        )}
                     </div>
 
                     {/* Submit Button */}
@@ -138,21 +144,10 @@ export default function Login({
                         Log in
                     </Button>
                 </div>
-
-                {/* Optional Register Link */}
-                {/* {canRegister && (
-                    <div className="text-center text-sm text-muted-foreground">
-                        Don't have an account?{' '}
-                        <TextLink href={register()} tabIndex={5}>
-                            Sign up
-                        </TextLink>
-                    </div>
-                )} */}
             </form>
 
-            {/* Status Message */}
             {status && (
-                <div className="mb-4 text-center text-sm font-medium text-green-600">
+                <div className="mt-4 text-center text-sm font-medium text-green-600">
                     {status}
                 </div>
             )}

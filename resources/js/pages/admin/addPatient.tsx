@@ -222,7 +222,7 @@ export default function AddPatient({ patients, nationalities }: Props) {
 
                 <main className="mx-auto max-w-6xl p-8">
                     {/* ADD PATIENT FORM */}
-                    <section className="mb-8 rounded-xl border border-slate-300 bg-white p-8 shadow-sm">
+                    <section className="mb-8 rounded-xl border border-slate-400 bg-white p-8">
                         <div className="mb-6 border-b border-slate-100 pb-4">
                             <h2 className="font-montserrat text-sm font-bold tracking-tight text-slate-700 uppercase">
                                 Add New Patient
@@ -530,7 +530,7 @@ export default function AddPatient({ patients, nationalities }: Props) {
                     </section>
 
                     {/* PATIENT LIST TABLE */}
-                    <section className="overflow-hidden rounded-xl border border-slate-300 bg-white shadow-sm">
+                    <section className="overflow-hidden rounded-xl border border-slate-400 bg-white">
                         <div className="overflow-x-auto">
                             <table className="w-full text-left">
                                 <thead className="border-b border-slate-200 bg-slate-50 text-[10px] font-bold tracking-widest text-slate-500 uppercase">

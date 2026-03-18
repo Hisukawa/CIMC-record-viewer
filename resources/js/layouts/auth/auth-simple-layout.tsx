@@ -18,9 +18,9 @@ export default function AuthSimpleLayout({
                         >
                             <div className="mb-1 flex h-10 w-64 items-center justify-center rounded-md">
                                 <img
-                                    src="/images/cimc_logo.png" // path inside public folder
+                                    src="/icon.png" // path inside public folder
                                     alt="Logo"
-                                    className="h-42 w-42 object-contain"
+                                    className="h-20 w-20 object-contain"
                                 />
                             </div>
                             <span className="sr-only">{title}</span>

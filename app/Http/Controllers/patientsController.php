@@ -206,22 +206,23 @@ class patientsController extends Controller
 
     public function index(Request $request)
     {
-        $query = patients::withCount(['records', 'records as records_count' => function ($query) {
-            $query->withCount('file');
-        }]);
+        // 1. Build the base query
+        $query = patients::query()
+            ->withCount('records');
+        $query->when($request->filled('first'), fn($q) => $q->where('firstname', 'like', "%{$request->first}%"))
+            ->when($request->filled('last'), fn($q) => $q->where('lastname', 'like', "%{$request->last}%"))
+            ->when($request->filled('mid'), fn($q) => $q->where('middlename', 'like', "%{$request->mid}%"))
+            ->when($request->filled('hrn'), fn($q) => $q->where('hrn', 'like', "%{$request->hrn}%"));
+        
 
-        $query->when($request->first, fn($q, $v) => $q->where('firstname', 'like', "%$v%"))
-            ->when($request->last, fn($q, $v) => $q->where('lastname', 'like', "%$v%"))
-            ->when($request->mid, fn($q, $v) => $q->where('middlename', 'like', "%$v%"))
-            ->when($request->hrn, fn($q, $v) => $q->where('hrn', 'like', "%$v%"));
-
+        $patients = $query->latest()->paginate(5)->withQueryString();
+        
         return Inertia::render('clientsList', [
-            // Ensuring an empty array is sent if no data exists to prevent .map() errors
-            'patients' => $query->latest()->paginate(5)->withQueryString(),
+            'patients' => $patients,
             'filters' => $request->only(['first', 'last', 'mid', 'hrn']),
             'currentUser' => [
                 'id' => Auth::id(),
-                'role' => Auth::user()->role, // Make sure your users table has a 'role' column
+                'role' => Auth::user()->role,
             ],
         ]);
     }
