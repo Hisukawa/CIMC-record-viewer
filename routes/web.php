@@ -23,7 +23,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     //Public Records
     Route::prefix('/viewer')->name('patients.')->group(function () {
         Route::get('/record-finder', [patientsController::class, 'index'])->name('index');
-        Route::get('/{hrn}/folder', [patientsController::class, 'getFiles'])->name('folder');
+        Route::post('/folder', [patientsController::class, 'getFiles'])->name('folder');
     });
 
     // Admin Routes
@@ -38,7 +38,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         // Route::get('/register', function () {
         //     return Inertia::render('auth/register');
         // })->name('register');
-
+        
         // Admin add patient page
         Route::get('patients/create', [patientsController::class, 'create'])
             ->name('patients.create');

@@ -210,9 +210,12 @@ export default function RecordFinder({ patients, filters, auth }: Props) {
                                             <span className="text-[10px] font-bold uppercase text-[var(--patients-muted)]">{p.records_count} PDF(s)</span>
                                         </td>
                                         <td className="px-8 py-5 text-right">
-                                            <Link href={`/viewer/${p.hrn}/folder`} className="inline-block border border-[var(--patients-sidebar-border)] px-4 py-1.5 text-[10px] font-bold uppercase tracking-tighter hover:bg-[var(--patients-accent)] hover:text-white dark:hover:text-black transition-all">
+                                            <button
+                                            onClick={() => router.post(`/viewer/folder`, { hrn: p.hrn })}
+                                                className="inline-block cursor-pointer border border-[var(--patients-sidebar-border)] px-4 py-1.5 text-[10px] font-bold tracking-tighter uppercase transition-all hover:bg-[var(--patients-accent)] hover:text-white dark:hover:text-black"
+                                                >
                                                 View Folder
-                                            </Link>
+                                            </button>
                                         </td>
                                     </tr>
                                 ))}

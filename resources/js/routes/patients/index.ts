@@ -1,7 +1,7 @@
-import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition, applyUrlDefaults } from './../../wayfinder'
+import { queryParams, type RouteQueryOptions, type RouteDefinition, type RouteFormDefinition } from './../../wayfinder'
 /**
 * @see \App\Http\Controllers\patientsController::index
- * @see app/Http/Controllers/patientsController.php:207
+ * @see app/Http/Controllers/patientsController.php:18
  * @route '/viewer/record-finder'
  */
 export const index = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -16,7 +16,7 @@ index.definition = {
 
 /**
 * @see \App\Http\Controllers\patientsController::index
- * @see app/Http/Controllers/patientsController.php:207
+ * @see app/Http/Controllers/patientsController.php:18
  * @route '/viewer/record-finder'
  */
 index.url = (options?: RouteQueryOptions) => {
@@ -25,7 +25,7 @@ index.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\patientsController::index
- * @see app/Http/Controllers/patientsController.php:207
+ * @see app/Http/Controllers/patientsController.php:18
  * @route '/viewer/record-finder'
  */
 index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -34,7 +34,7 @@ index.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\patientsController::index
- * @see app/Http/Controllers/patientsController.php:207
+ * @see app/Http/Controllers/patientsController.php:18
  * @route '/viewer/record-finder'
  */
 index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -44,7 +44,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\patientsController::index
- * @see app/Http/Controllers/patientsController.php:207
+ * @see app/Http/Controllers/patientsController.php:18
  * @route '/viewer/record-finder'
  */
     const indexForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -54,7 +54,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\patientsController::index
- * @see app/Http/Controllers/patientsController.php:207
+ * @see app/Http/Controllers/patientsController.php:18
  * @route '/viewer/record-finder'
  */
         indexForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -63,7 +63,7 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\patientsController::index
- * @see app/Http/Controllers/patientsController.php:207
+ * @see app/Http/Controllers/patientsController.php:18
  * @route '/viewer/record-finder'
  */
         indexForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -79,104 +79,62 @@ index.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     index.form = indexForm
 /**
 * @see \App\Http\Controllers\patientsController::folder
- * @see app/Http/Controllers/patientsController.php:230
- * @route '/viewer/{hrn}/folder'
+ * @see app/Http/Controllers/patientsController.php:41
+ * @route '/viewer/folder'
  */
-export const folder = (args: { hrn: string | number } | [hrn: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: folder.url(args, options),
-    method: 'get',
+export const folder = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: folder.url(options),
+    method: 'post',
 })
 
 folder.definition = {
-    methods: ["get","head"],
-    url: '/viewer/{hrn}/folder',
-} satisfies RouteDefinition<["get","head"]>
+    methods: ["post"],
+    url: '/viewer/folder',
+} satisfies RouteDefinition<["post"]>
 
 /**
 * @see \App\Http\Controllers\patientsController::folder
- * @see app/Http/Controllers/patientsController.php:230
- * @route '/viewer/{hrn}/folder'
+ * @see app/Http/Controllers/patientsController.php:41
+ * @route '/viewer/folder'
  */
-folder.url = (args: { hrn: string | number } | [hrn: string | number ] | string | number, options?: RouteQueryOptions) => {
-    if (typeof args === 'string' || typeof args === 'number') {
-        args = { hrn: args }
-    }
-
-    
-    if (Array.isArray(args)) {
-        args = {
-                    hrn: args[0],
-                }
-    }
-
-    args = applyUrlDefaults(args)
-
-    const parsedArgs = {
-                        hrn: args.hrn,
-                }
-
-    return folder.definition.url
-            .replace('{hrn}', parsedArgs.hrn.toString())
-            .replace(/\/+$/, '') + queryParams(options)
+folder.url = (options?: RouteQueryOptions) => {
+    return folder.definition.url + queryParams(options)
 }
 
 /**
 * @see \App\Http\Controllers\patientsController::folder
- * @see app/Http/Controllers/patientsController.php:230
- * @route '/viewer/{hrn}/folder'
+ * @see app/Http/Controllers/patientsController.php:41
+ * @route '/viewer/folder'
  */
-folder.get = (args: { hrn: string | number } | [hrn: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'get'> => ({
-    url: folder.url(args, options),
-    method: 'get',
-})
-/**
-* @see \App\Http\Controllers\patientsController::folder
- * @see app/Http/Controllers/patientsController.php:230
- * @route '/viewer/{hrn}/folder'
- */
-folder.head = (args: { hrn: string | number } | [hrn: string | number ] | string | number, options?: RouteQueryOptions): RouteDefinition<'head'> => ({
-    url: folder.url(args, options),
-    method: 'head',
+folder.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
+    url: folder.url(options),
+    method: 'post',
 })
 
     /**
 * @see \App\Http\Controllers\patientsController::folder
- * @see app/Http/Controllers/patientsController.php:230
- * @route '/viewer/{hrn}/folder'
+ * @see app/Http/Controllers/patientsController.php:41
+ * @route '/viewer/folder'
  */
-    const folderForm = (args: { hrn: string | number } | [hrn: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-        action: folder.url(args, options),
-        method: 'get',
+    const folderForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+        action: folder.url(options),
+        method: 'post',
     })
 
             /**
 * @see \App\Http\Controllers\patientsController::folder
- * @see app/Http/Controllers/patientsController.php:230
- * @route '/viewer/{hrn}/folder'
+ * @see app/Http/Controllers/patientsController.php:41
+ * @route '/viewer/folder'
  */
-        folderForm.get = (args: { hrn: string | number } | [hrn: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: folder.url(args, options),
-            method: 'get',
-        })
-            /**
-* @see \App\Http\Controllers\patientsController::folder
- * @see app/Http/Controllers/patientsController.php:230
- * @route '/viewer/{hrn}/folder'
- */
-        folderForm.head = (args: { hrn: string | number } | [hrn: string | number ] | string | number, options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
-            action: folder.url(args, {
-                        [options?.mergeQuery ? 'mergeQuery' : 'query']: {
-                            _method: 'HEAD',
-                            ...(options?.query ?? options?.mergeQuery ?? {}),
-                        }
-                    }),
-            method: 'get',
+        folderForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
+            action: folder.url(options),
+            method: 'post',
         })
     
     folder.form = folderForm
 /**
 * @see \App\Http\Controllers\patientsController::create
- * @see app/Http/Controllers/patientsController.php:260
+ * @see app/Http/Controllers/patientsController.php:72
  * @route '/patients/create'
  */
 export const create = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -191,7 +149,7 @@ create.definition = {
 
 /**
 * @see \App\Http\Controllers\patientsController::create
- * @see app/Http/Controllers/patientsController.php:260
+ * @see app/Http/Controllers/patientsController.php:72
  * @route '/patients/create'
  */
 create.url = (options?: RouteQueryOptions) => {
@@ -200,7 +158,7 @@ create.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\patientsController::create
- * @see app/Http/Controllers/patientsController.php:260
+ * @see app/Http/Controllers/patientsController.php:72
  * @route '/patients/create'
  */
 create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
@@ -209,7 +167,7 @@ create.get = (options?: RouteQueryOptions): RouteDefinition<'get'> => ({
 })
 /**
 * @see \App\Http\Controllers\patientsController::create
- * @see app/Http/Controllers/patientsController.php:260
+ * @see app/Http/Controllers/patientsController.php:72
  * @route '/patients/create'
  */
 create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
@@ -219,7 +177,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
     /**
 * @see \App\Http\Controllers\patientsController::create
- * @see app/Http/Controllers/patientsController.php:260
+ * @see app/Http/Controllers/patientsController.php:72
  * @route '/patients/create'
  */
     const createForm = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -229,7 +187,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
 
             /**
 * @see \App\Http\Controllers\patientsController::create
- * @see app/Http/Controllers/patientsController.php:260
+ * @see app/Http/Controllers/patientsController.php:72
  * @route '/patients/create'
  */
         createForm.get = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -238,7 +196,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
         })
             /**
 * @see \App\Http\Controllers\patientsController::create
- * @see app/Http/Controllers/patientsController.php:260
+ * @see app/Http/Controllers/patientsController.php:72
  * @route '/patients/create'
  */
         createForm.head = (options?: RouteQueryOptions): RouteFormDefinition<'get'> => ({
@@ -254,7 +212,7 @@ create.head = (options?: RouteQueryOptions): RouteDefinition<'head'> => ({
     create.form = createForm
 /**
 * @see \App\Http\Controllers\patientsController::store
- * @see app/Http/Controllers/patientsController.php:287
+ * @see app/Http/Controllers/patientsController.php:99
  * @route '/patients'
  */
 export const store = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -269,7 +227,7 @@ store.definition = {
 
 /**
 * @see \App\Http\Controllers\patientsController::store
- * @see app/Http/Controllers/patientsController.php:287
+ * @see app/Http/Controllers/patientsController.php:99
  * @route '/patients'
  */
 store.url = (options?: RouteQueryOptions) => {
@@ -278,7 +236,7 @@ store.url = (options?: RouteQueryOptions) => {
 
 /**
 * @see \App\Http\Controllers\patientsController::store
- * @see app/Http/Controllers/patientsController.php:287
+ * @see app/Http/Controllers/patientsController.php:99
  * @route '/patients'
  */
 store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
@@ -288,7 +246,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
     /**
 * @see \App\Http\Controllers\patientsController::store
- * @see app/Http/Controllers/patientsController.php:287
+ * @see app/Http/Controllers/patientsController.php:99
  * @route '/patients'
  */
     const storeForm = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
@@ -298,7 +256,7 @@ store.post = (options?: RouteQueryOptions): RouteDefinition<'post'> => ({
 
             /**
 * @see \App\Http\Controllers\patientsController::store
- * @see app/Http/Controllers/patientsController.php:287
+ * @see app/Http/Controllers/patientsController.php:99
  * @route '/patients'
  */
         storeForm.post = (options?: RouteQueryOptions): RouteFormDefinition<'post'> => ({
