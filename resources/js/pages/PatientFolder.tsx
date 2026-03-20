@@ -72,7 +72,7 @@ export default function PatientFolder({
         null,
     );
     const [isInfoOpen, setIsInfoOpen] = useState(false);
-
+    
     // Theme & Role Logic
     const isAdmin = auth.user.role === 'admin';
     const isStaff = auth.user.role === 'staff';

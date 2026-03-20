@@ -23,19 +23,19 @@ class PatientsTableSeeder extends Seeder
             return;
         }
 
-        for ($i = 1; $i <= 50; $i++) {
+        for ($i = 1; $i <= 10; $i++) {
             // Generate 8 random digits after 7 zeros to make 15-digit HRN
             $randomDigits = str_pad($faker->unique()->numberBetween(0, 99999999), 8, '0', STR_PAD_LEFT);
             $hrn = '0000000' . $randomDigits; // 7 zeros + 8 digits = 15 digits
-            
+
             DB::table('patients')->insert([
                 'hrn' => $hrn,
                 'firstname' => $faker->firstName,
                 'middlename' => $faker->optional()->firstName,
                 'lastname' => $faker->lastName,
                 'created_by' => $faker->randomElement($users),
-                'created_at' => now(),
-                'updated_at' => now(),
+                'created_at' => $faker->dateTimeBetween('2026-09-01', '2026-09-31'),
+                'updated_at' => $faker->dateTimeBetween('2026-09-01', '2026-09-31'),
             ]);
         }
 

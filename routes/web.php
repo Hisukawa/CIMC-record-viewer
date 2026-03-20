@@ -7,13 +7,14 @@ use Illuminate\Support\Facades\Auth;
 use Inertia\Inertia;
 use Laravel\Fortify\Features;
 
+use App\Http\Controllers\DashboardController;
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
 // ])->name('home');
 
 Route::get('/', function () {
     if (Auth::check()) {
-        return redirect()->route('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     }
     return redirect()->route('login');
 })->name('home');
@@ -25,14 +26,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
         // This receives the POST from the button
         Route::post('/folder', [patientsController::class, 'initFolder']);
-
+        
         // This handles the display and the browser REFRESH (GET)
         Route::get('/folder', [patientsController::class, 'getFiles'])->name('folder');
     });
 
     // Admin Routes
     Route::middleware(['role:admin'])->group(function () {
-        Route::inertia('dashboard', 'dashboard')->name('dashboard');
+        Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
 
         Route::get('/register', [RegisterController::class, 'index'])->name('register');

@@ -14,7 +14,7 @@ class patients extends Model
     public function records() {
         return $this->hasMany(patientsRecord::class, 'patients_id');
     }
-
+    
     public function information() {
         return $this->hasOne(patientsInfo::class, 'patient_id');
     }

@@ -93,7 +93,7 @@ export default function RecordFinder({ patients, filters, auth }: Props) {
         setCopied(true);
         setTimeout(() => setCopied(false), 2000);
     };
-
+    
     const handleSearch = () => {
         if (isSearchDisabled) return;
         setIsLoading(true);
@@ -305,7 +305,7 @@ export default function RecordFinder({ patients, filters, auth }: Props) {
                 <section className="overflow-hidden rounded-lg border border-[var(--patients-section-border)] bg-[var(--patients-section-bg)]">
                     <div className="overflow-x-auto">
                         <table className="w-full text-left">
-                            <thead className="border-b border-[var(--patients-border)] bg-black/5 text-[10px] font-black tracking-widest text-[var(--patients-muted)] uppercase dark:bg-black/40">
+                            <thead className="border-b border-[var(--patients-border)] c text-[10px] font-black tracking-widest text-[var(--patients-muted)] uppercase dark:bg-black/40">
                                 <tr>
                                     <th className="px-8 py-4">HRN</th>
                                     <th className="px-8 py-4">Patient Name</th>
