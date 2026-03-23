@@ -20,7 +20,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('file_id')->references('id')->on('patients_records_file')->onDelete('cascade');
-            $table->foreign('uploaded_by')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('uploaded_by')->references('id')->on('users');
         });
     }
 

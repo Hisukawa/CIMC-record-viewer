@@ -19,17 +19,20 @@ class DashboardController extends Controller
         // Fetch monthly patient registrations for the current year
         $monthlyUploads = patients::select(
             DB::raw('count(*) as count'),
-            DB::raw("DATE_FORMAT(created_at, '%b') as month"),
+            DB::raw("FORMAT(created_at, 'MMM') as month"),
             DB::raw('MONTH(created_at) as month_num')
         )
-        ->whereYear('created_at', date('Y'))
-        ->groupBy('month', 'month_num')
-        ->orderBy('month_num')
-        ->get()
-        ->map(fn($item) => [
-            'month' => $item->month,
-            'patients' => $item->count
-        ]);
+            ->whereYear('created_at', date('Y'))
+            ->groupBy(
+                DB::raw("FORMAT(created_at, 'MMM')"),
+                DB::raw('MONTH(created_at)')
+            )
+            ->orderBy('month_num')
+            ->get()
+            ->map(fn($item) => [
+                'month' => $item->month,
+                'patients' => $item->count
+            ]);
 
         return Inertia::render('dashboard', [
             'stats' => [

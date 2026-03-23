@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('patients_info', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('patient_id');
-            $table->enum('sex', ['Male', 'Female']);
+            $table->enum('sex', ['Male', 'Female'])->default('Male');
             $table->string('civil_status', 20);
             $table->string('nationality', 50);
             $table->date('birthdate');
