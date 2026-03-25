@@ -36,7 +36,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/folder', [patientsController::class, 'getFiles'])->name('folder');
     });
 
-    Route::middleware(['role:admin, staff'])->group(function () {
+    Route::middleware(['role:admin,staff'])->group(function () {
         Route::post('/patients/add-hrn', [patientsController::class, 'addHRN'])
                 ->name('patients.add-hrn');
     });
@@ -44,6 +44,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     // Admin Routes
     Route::middleware(['role:admin'])->group(function () {
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
 
 
         Route::get('/register', [RegisterController::class, 'index'])->name('register');
