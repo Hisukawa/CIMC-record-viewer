@@ -9,6 +9,8 @@ use Laravel\Fortify\Features;
 use App\Http\Controllers\ActivityLogsController;
 
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\PatientHRNController;
+
 // Route::inertia('/', 'welcome', [
 //     'canRegister' => Features::enabled(Features::registration()),
 // ])->name('home');
@@ -22,14 +24,21 @@ Route::get('/', function () {
 
 Route::middleware(['auth', 'verified'])->group(function () {
 
+
+
     Route::prefix('/viewer')->name('patients.')->group(function () {
         Route::get('/record-finder', [patientsController::class, 'index'])->name('index');
 
         // This receives the POST from the button
         Route::post('/folder', [patientsController::class, 'initFolder']);
-        
+
         // This handles the display and the browser REFRESH (GET)
         Route::get('/folder', [patientsController::class, 'getFiles'])->name('folder');
+    });
+
+    Route::middleware(['role:admin, staff'])->group(function () {
+        Route::post('/patients/add-hrn', [patientsController::class, 'addHRN'])
+                ->name('patients.add-hrn');
     });
 
     // Admin Routes

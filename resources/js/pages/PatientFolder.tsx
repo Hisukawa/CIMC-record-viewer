@@ -3,6 +3,7 @@ import { Head, Link } from '@inertiajs/react';
 import Header from '@/components/header';
 import AppLayout from '@/layouts/app-layout';
 import type { BreadcrumbItem } from '@/types';
+import { useForm } from '@inertiajs/react';
 
 // --- Interfaces ---
 interface Address {
@@ -47,12 +48,20 @@ interface PaginatedRecords {
     last_page: number;
 }
 
+interface HRN {
+    id: number;
+    hrn: string;
+    is_primary: boolean;
+}
+
 interface Patient {
+    id: number;
     hrn: string;
     firstname: string;
     lastname: string;
     middlename: string;
     information?: PatientInformation | null;
+    hrns?: HRN[];
 }
 
 type Props = {
@@ -72,6 +81,11 @@ export default function PatientFolder({
         null,
     );
     const [isInfoOpen, setIsInfoOpen] = useState(false);
+    const [isAddHRNModalOpen, setIsAddHRNModalOpen] = useState(false);
+
+    const [isHRNModalOpen, setIsHRNModalOpen] = useState(false);
+
+    const otherHRNs = patient.hrns?.filter((h) => !h.is_primary) || [];
 
     // Theme & Role Logic
     const isAdmin = auth.user.role === 'admin';
@@ -87,6 +101,11 @@ export default function PatientFolder({
     const breadcrumbs: BreadcrumbItem[] = [
         { title: "Patient's Folder", href: '/viewer/record-finder' },
     ];
+
+    const { data, setData, post, processing, reset, errors } = useForm({
+        patient_id: patient.id, // IMPORTANT: make sure patient.id exists in props
+        hrn: '',
+    });
 
     // Functional Logic: Identify Latest File
     const allFilesOnPage = records.data || [];
@@ -106,6 +125,18 @@ export default function PatientFolder({
     const otherFiles = latestFile
         ? allFilesOnPage.filter((file) => file.id !== latestFile.id)
         : allFilesOnPage;
+
+    const submitHRN = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        (post('/patients/add-hrn'),
+            {
+                onSuccess: () => {
+                    reset();
+                    setIsAddHRNModalOpen(false);
+                },
+            });
+    };
 
     // Common UI Classes
     const labelClass =
@@ -190,6 +221,9 @@ export default function PatientFolder({
                                 <div className="flex justify-center gap-6">
                                     {isAdmin && (
                                         <button
+                                            onClick={() =>
+                                                setIsAddHRNModalOpen(true)
+                                            }
                                             className={`${sectionTitle} flex items-center gap-2 rounded-md border border-gray-300 px-3 py-1 text-sm font-medium text-gray-700 transition-all duration-150 hover:border-gray-500 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:border-gray-400 dark:hover:bg-gray-800`}
                                         >
                                             <span className="font-bold text-[var(--patients-accent)]">
@@ -200,6 +234,7 @@ export default function PatientFolder({
                                     )}
 
                                     <button
+                                        onClick={() => setIsHRNModalOpen(true)}
                                         className={`${sectionTitle} flex items-center gap-2 rounded-md border border-gray-300 px-3 py-1 text-sm font-medium text-gray-700 transition-all duration-150 hover:border-gray-500 hover:bg-gray-100 dark:border-gray-600 dark:text-gray-300 dark:hover:border-gray-400 dark:hover:bg-gray-800`}
                                     >
                                         <span className="font-bold text-[var(--patients-accent)]">
@@ -510,6 +545,122 @@ export default function PatientFolder({
                                 Path Error: No PDF source found.
                             </div>
                         )}
+                    </div>
+                </div>
+            )}
+
+            {/* MODAL VIEW HRN */}
+            {/* --- HRN MODAL --- */}
+            {isHRNModalOpen && (
+                <div className="fixed inset-0 z-[110] flex items-center justify-center bg-black/70 backdrop-blur-sm">
+                    <div className="w-full max-w-md rounded-lg bg-[var(--patients-section-bg)] p-6 shadow-xl">
+                        {/* HEADER */}
+                        <div className="mb-4 flex items-center justify-between">
+                            <h2 className="text-sm font-black tracking-widest text-[var(--patients-accent)] uppercase">
+                                Other HRNs
+                            </h2>
+
+                            <button
+                                onClick={() => setIsHRNModalOpen(false)}
+                                className="text-xs font-bold text-red-500 hover:underline"
+                            >
+                                Close
+                            </button>
+                        </div>
+
+                        {/* CURRENT HRN */}
+                        <div className="mb-4">
+                            <p className="text-[10px] font-bold text-[var(--patients-muted)] uppercase">
+                                Main HRN
+                            </p>
+                            <p className="font-mono text-sm font-black text-[var(--patients-accent)]">
+                                {patient.hrn}
+                            </p>
+                        </div>
+
+                        {/* LIST */}
+                        <div className="space-y-2">
+                            {otherHRNs.length > 0 ? (
+                                otherHRNs.map((h) => (
+                                    <div
+                                        key={h.id}
+                                        className="flex items-center justify-between rounded border border-[var(--patients-border)] px-3 py-2 font-mono text-xs"
+                                    >
+                                        {h.hrn}
+                                    </div>
+                                ))
+                            ) : (
+                                <p className="text-[10px] text-[var(--patients-muted)] uppercase italic">
+                                    No additional HRNs found
+                                </p>
+                            )}
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* MODAL ADD HRN */}
+            {isAddHRNModalOpen && (
+                <div className="fixed inset-0 z-[120] flex items-center justify-center bg-black/70 backdrop-blur-sm">
+                    <div className="w-full max-w-md rounded-lg bg-[var(--patients-section-bg)] p-6 shadow-xl">
+                        {/* HEADER */}
+                        <div className="mb-4 flex items-center justify-between">
+                            <h2 className="text-sm font-black tracking-widest text-[var(--patients-accent)] uppercase">
+                                Add New HRN
+                            </h2>
+
+                            <button
+                                onClick={() => setIsAddHRNModalOpen(false)}
+                                className="text-xs font-bold text-red-500 hover:underline"
+                            >
+                                Close
+                            </button>
+                        </div>
+
+                        {/* FORM */}
+                        <form onSubmit={submitHRN} className="space-y-4">
+                            {/* INPUT */}
+                            <div>
+                                <label className="text-[10px] font-bold text-[var(--patients-muted)] uppercase">
+                                    New HRN
+                                </label>
+                                <input
+                                    type="text"
+                                    value={data.hrn}
+                                    onChange={(e) =>
+                                        setData('hrn', e.target.value)
+                                    }
+                                    className="mt-1 w-full rounded border border-[var(--patients-border)] bg-transparent px-3 py-2 font-mono text-sm focus:border-[var(--patients-accent)] focus:outline-none"
+                                    placeholder="Enter HRN..."
+                                    required
+                                />
+
+                                {errors.hrn && (
+                                    <p className="mt-1 text-[10px] text-red-500">
+                                        {errors.hrn}
+                                    </p>
+                                )}
+                            </div>
+
+                            {/* ACTIONS */}
+                            <div className="flex justify-end gap-2 pt-2">
+                                <button
+                                    type="button"
+                                    onClick={() => setIsAddHRNModalOpen(false)}
+                                    className="px-4 py-2 text-[10px] font-black text-gray-500 uppercase hover:underline"
+                                >
+                                    Cancel
+                                </button>
+
+                                <button
+                                    type="submit"
+                                    disabled={processing}
+                                    className="bg-[var(--patients-accent)] px-4 py-2 text-[10px] font-black text-white uppercase transition hover:brightness-90 disabled:opacity-50 dark:text-black"
+                                >
+                                    {processing ? 'Saving...' : 'Save HRN'}
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
             )}
