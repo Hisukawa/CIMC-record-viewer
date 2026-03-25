@@ -11,14 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('patients', function (Blueprint $table) {
+        Schema::create('patient_hrns', function (Blueprint $table) {
             $table->id();
+            $table->unsignedBigInteger('patient_id');
             $table->string('hrn', 50)->unique();
-            $table->string('firstname', 50);
-            $table->string('middlename', 50)->nullable();
-            $table->string('lastname', 50);
-            $table->unsignedBigInteger('created_by');
+            $table->boolean('is_primary')->default(false);
             $table->timestamps();
+
+            $table->foreign('patient_id')->references('id')->on('patients')->onDelete('cascade');
         });
     }
 
@@ -27,7 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('patients');
+        Schema::dropIfExists('patient_hrns');
     }
 };
-

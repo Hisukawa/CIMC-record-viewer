@@ -12,6 +12,7 @@ use App\Models\patientsInfo;
 use App\Models\patientsAddress;
 use Illuminate\Support\Facades\DB;
 use App\Traits\Loggable;
+use App\Models\PatientHRN;
 
 class patientsController extends Controller
 {
@@ -68,7 +69,7 @@ class patientsController extends Controller
                 ->with('error', 'Patient record not found or session expired.');
         }
 
-        $patient = patients::with(['information.address'])
+        $patient = patients::with(['information.address', 'hrns'])
             ->where('hrn', $hrn)
             ->firstOrFail();
 
@@ -191,5 +192,27 @@ class patientsController extends Controller
         );
 
         return redirect()->route('patients.create')->with('success', 'Patient record created across all tables.');
+    }
+
+    public function addHRN(Request $request)
+    {
+        $validated = $request->validate([
+            'patient_id' => 'required|exists:patients,id',
+            'hrn' => 'required|string|unique:patient_hrns,hrn',
+        ]);
+
+        $hrn = PatientHRN::create([
+            'patient_id' => $validated['patient_id'],
+            'hrn' => $validated['hrn'],
+            'is_primary' => false,
+        ]);
+
+        $this->logActivity(
+            'CREATE',
+            "Added new HRN ({$validated['hrn']}) to patient ID {$validated['patient_id']}",
+            'Patient HRN'
+        );
+
+        return back()->with('success', 'New HRN added successfully.');
     }
 }
