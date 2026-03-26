@@ -93,13 +93,22 @@ export default function PatientFolder({
     const [open, setOpen] = useState(false);
     const [selected, setSelected] = useState('Add');
 
+    const [search, setSearch] = useState('');
+    const [categories, setCategories] = useState([
+        'OPD RECORD',
+        'LABORATORY',
+        'RADIO',
+    ]);
+
     const handleSelect = (value) => {
         setSelected(value);
+        setSearch(value);
         setOpen(false);
 
-        if (value === 'OPD RECORD') setOpenOPDModal(true);
-        if (value === 'LABORATORY') setOpenLabModal(true);
-        if (value === 'RADIO') setOpenRadioModal(true);
+        // OPTIONAL: save new category dynamically
+        if (!categories.includes(value)) {
+            setCategories([...categories, value]);
+        }
     };
 
     // Theme & Role Logic
@@ -466,44 +475,125 @@ export default function PatientFolder({
                                         onClick={() => setOpen(!open)}
                                         className={`${sectionTitle} cursor-pointer rounded border border-black bg-white px-4 py-2 text-black transition-colors hover:bg-black hover:text-white dark:border-white dark:bg-black dark:text-white dark:hover:bg-white dark:hover:text-black`}
                                     >
-                                        {selected} ▾
+                                        {search || selected} ▾
                                     </button>
 
                                     {open && (
-                                        <div className="absolute left-0 z-50 mt-2 w-48 rounded border border-gray-300 bg-white shadow-md dark:border-gray-600 dark:bg-black">
-                                            <button
-                                                onClick={() =>
-                                                    handleSelect('OPD RECORD')
+                                        <div className="absolute left-0 z-50 mt-2 w-64 rounded border border-gray-300 bg-white shadow-md dark:border-gray-600 dark:bg-black">
+                                            {/* Input field */}
+                                            <input
+                                                type="text"
+                                                value={search}
+                                                onChange={(e) =>
+                                                    setSearch(e.target.value)
                                                 }
-                                                className="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-800"
-                                            >
-                                                OPD RECORD
-                                            </button>
+                                                placeholder="Type or select..."
+                                                className="w-full border-b px-3 py-2 outline-none dark:bg-black"
+                                            />
 
-                                            <button
-                                                onClick={() =>
-                                                    handleSelect('LABORATORY')
-                                                }
-                                                className="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-800"
-                                            >
-                                                LABORATORY
-                                            </button>
+                                            {/* Suggestions */}
+                                            <div className="max-h-40 overflow-y-auto">
+                                                {categories
+                                                    .filter((cat) =>
+                                                        cat
+                                                            .toLowerCase()
+                                                            .includes(
+                                                                search.toLowerCase(),
+                                                            ),
+                                                    )
+                                                    .map((cat) => (
+                                                        <button
+                                                            key={cat}
+                                                            onClick={() =>
+                                                                handleSelect(
+                                                                    cat,
+                                                                )
+                                                            }
+                                                            className="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-800"
+                                                        >
+                                                            {cat}
+                                                        </button>
+                                                    ))}
 
-                                            <button
-                                                onClick={() =>
-                                                    handleSelect('RADIO')
-                                                }
-                                                className="block w-full px-4 py-2 text-left hover:bg-gray-100 dark:hover:bg-gray-800"
-                                            >
-                                                RADIO
-                                            </button>
+                                                {/* If no match → allow adding */}
+                                                {search &&
+                                                    !categories.includes(
+                                                        search,
+                                                    ) && (
+                                                        <button
+                                                            onClick={() =>
+                                                                handleSelect(
+                                                                    search,
+                                                                )
+                                                            }
+                                                            className="block w-full px-4 py-2 text-left text-blue-500 hover:bg-gray-100 dark:hover:bg-gray-800"
+                                                        >
+                                                            Add "{search}"
+                                                        </button>
+                                                    )}
+                                            </div>
                                         </div>
                                     )}
                                 </div>
+
                                 <button
-                                    className={` ${sectionTitle} cursor-pointer rounded border border-black bg-white px-4 py-2 text-black transition-colors hover:bg-black hover:text-white dark:border-white dark:bg-black dark:text-white dark:hover:bg-white dark:hover:text-black`}
+                                    onClick={async () => {
+                                        try {
+                                            const formData = new FormData();
+                                            formData.append(
+                                                'category',
+                                                selected,
+                                            ); // send selected category
+
+                                            const res = await fetch(
+                                                '/pdf/create-blank',
+                                                {
+                                                    method: 'POST',
+                                                    body: formData,
+                                                    headers: {
+                                                        'X-CSRF-TOKEN': document
+                                                            .querySelector(
+                                                                'meta[name="csrf-token"]',
+                                                            )
+                                                            ?.getAttribute(
+                                                                'content',
+                                                            ),
+                                                        Accept: 'application/json',
+                                                    },
+                                                    credentials: 'same-origin', // 🔥 IMPORTANT
+                                                },
+                                            );
+                                            if (!res.ok) {
+                                                const text = await res.text();
+                                                console.error(
+                                                    'Server error:',
+                                                    text,
+                                                );
+                                                alert(
+                                                    'Request failed (check console)',
+                                                );
+                                                return;
+                                            }
+
+                                            const data = await res.json();
+
+                                            if (data.success) {
+                                                // open PDF in a new tab
+                                                window.open(
+                                                    data.path,
+                                                    '_blank',
+                                                );
+                                            } else {
+                                                alert('Failed to create PDF.');
+                                            }
+                                        } catch (err) {
+                                            console.error(err);
+                                            alert('Error creating PDF.');
+                                        }
+                                    }}
+                                    className={`${sectionTitle} cursor-pointer rounded border border-black bg-white px-4 py-2 text-black transition-colors hover:bg-black hover:text-white dark:border-white dark:bg-black dark:text-white dark:hover:bg-white dark:hover:text-black`}
                                 >
-                                    Upload File
+                                    Create PDF
                                 </button>
                             </div>
                         )}
